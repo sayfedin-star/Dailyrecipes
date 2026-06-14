@@ -1,0 +1,91 @@
+---
+import "../styles/global.css";
+import SiteMeta from "@rafters/astro-meta/components/SiteMeta.astro";
+import OgImage from "@rafters/astro-meta/components/OgImage.astro";
+import { Title, Description, ColorScheme, Canonical } from "eminence-astro-suite/components";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { 
+  title = "Delicious Recipes", 
+  description = "Discover delicious, easy-to-cook recipes for every occasion.", 
+  image = "/images/cookies.png" 
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Fonts Performance: Preconnect & swap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- SEO & Metadata from eminence-astro-suite -->
+    <Title value={title} />
+    <Description value={description} />
+    <Canonical />
+    <ColorScheme />
+    
+    <!-- Site Metadata from @rafters/astro-meta -->
+    <SiteMeta />
+    <OgImage src={image} />
+    
+    <style is:global>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Outfit', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+    <!-- Header with Glassmorphism -->
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
+            R
+          </span>
+          <span class="text-xl font-extrabold bg-gradient-to-r from-amber-600 to-rose-600 dark:from-amber-400 dark:to-rose-400 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
+            RecipeSuite
+          </span>
+        </a>
+
+        <nav class="flex items-center gap-6">
+          <a href="/" class="text-sm font-medium text-slate-600 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Home</a>
+          <a href="/category/dessert" class="text-sm font-medium text-slate-600 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Desserts</a>
+          <a href="/category/dinner" class="text-sm font-medium text-slate-600 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Dinners</a>
+          <a href="/category/salad" class="text-sm font-medium text-slate-600 hover:text-amber-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Salads</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <slot />
+    </main>
+
+    <!-- Premium Footer -->
+    <footer class="w-full border-t border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-900 py-8 mt-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-sm text-slate-500 dark:text-slate-400">
+            © {new Date().getFullYear()} RecipeSuite. All rights reserved. Built statically with Astro 6.4.
+          </span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="/sitemap.xml" class="text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors">Sitemap</a>
+          <a href="/robots.txt" class="text-sm text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors">Robots</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

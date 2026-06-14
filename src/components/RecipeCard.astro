@@ -1,0 +1,54 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  image: string;
+  prepTime: number;
+  category: string;
+}
+
+const { slug, title, image, prepTime, category } = Astro.props;
+
+// Category Badge Color Mapping
+const categoryColors: Record<string, string> = {
+  dessert: "bg-pink-50 text-pink-700 dark:bg-pink-950/35 dark:text-pink-300 border-pink-100 dark:border-pink-800/35",
+  dinner: "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/35 dark:text-indigo-300 border-indigo-100 dark:border-indigo-800/35",
+  salad: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/35 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800/35",
+};
+
+const categoryKey = category.toLowerCase();
+const badgeClass = categoryColors[categoryKey] || "bg-amber-50 text-amber-700 dark:bg-amber-950/35 dark:text-amber-300 border-amber-100 dark:border-amber-800/35";
+---
+
+<div class="group relative flex flex-col bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-none hover:-translate-y-1 transition-all duration-300">
+  <a href={`/recipe/${slug}`} class="absolute inset-0 z-10" aria-label={`Read recipe for ${title}`}></a>
+  
+  {/* Image container */}
+  <div class="relative w-full aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-850">
+    <img 
+      src={image} 
+      alt={title}
+      loading="lazy"
+      width={400}
+      height={250}
+      class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
+    />
+    <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-lg border text-xs font-semibold uppercase tracking-wider backdrop-blur-md ${badgeClass}`}>
+      {category}
+    </span>
+  </div>
+
+  {/* Content */}
+  <div class="flex flex-col flex-1 p-5">
+    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
+      {title}
+    </h3>
+    
+    <div class="flex items-center gap-4 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60 text-xs font-medium text-slate-500 dark:text-slate-400">
+      <div class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Prep: {prepTime} mins</span>
+      </div>
+    </div>
+  </div>
+</div>

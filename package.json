@@ -1,0 +1,27 @@
+{
+  "name": "astro-recipe-site",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "postinstall": "node patch-astro.js"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare-helpers": "file:./src/shims/cloudflare-helpers",
+    "@astrojs/sitemap": "^3.2.1",
+    "@casoon/astro-site-files": "^0.4.1",
+    "@rafters/astro-meta": "^0.2.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "astro": "^6.4.0",
+    "eminence-astro-suite": "^1.0.0-beta.5",
+    "tailwindcss": "^4.0.0",
+    "zod": "^3.23.8"
+  },
+  "overrides": {
+    "vite": "^7.3.2"
+  }
+}
