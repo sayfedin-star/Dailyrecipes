@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbzVMvql-id13ejhEw1Z35xs9JuNIDXIMAgLsNHvMpmyQHy86Ebsc6VCXMmJS_b7XlmO/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbz_fxA6W91uxBzrJBDim6I1tmJh66qbw2kw4IFelh6F8SpQDzLQ2nVA7_DOxLd7Lohf/exec';
 const OUTPUT_DIR = './src/content/recipes';
 
 function parseList(val) {
