@@ -21,7 +21,7 @@ const recipes = defineCollection({
       answer: z.string()
     })).optional(),
     body: z.string().optional(),
-    jump_to_recipe_url: z.string().optional()
+    jumpToRecipeUrl: z.string().optional()
   }),
 });
 

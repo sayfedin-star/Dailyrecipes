@@ -66,8 +66,8 @@ function normalizeRecipe(raw) {
     }
   }
 
-  let jumpToRecipeUrl = '';
-  const rawUrl = raw['Jump to Recipe'] || raw.jump_to_recipe_url || raw.jumpToRecipe || raw.jump_to_recipe || raw.jumpToRecipeUrl;
+  let jumpToRecipeUrlVal = '';
+  const rawUrl = raw['Jump to Recipe'] || raw.jumpToRecipeUrl || raw.jumpToRecipe || raw.jump_to_recipe_url || raw.jump_to_recipe || raw.jumptorecipeurl;
   if (rawUrl) {
     const trimmed = String(rawUrl).trim();
     if (trimmed) {
@@ -77,7 +77,7 @@ function normalizeRecipe(raw) {
           urlToCheck = 'https://' + urlToCheck;
         }
         new URL(urlToCheck);
-        jumpToRecipeUrl = urlToCheck;
+        jumpToRecipeUrlVal = urlToCheck;
       } catch (e) {
         console.warn(`[CMS Sync] Invalid URL for recipe '${raw.title || 'untitled'}': ${trimmed}`);
       }
@@ -99,7 +99,7 @@ function normalizeRecipe(raw) {
     steps,
     faq,
     body: String(raw.body || raw.content || '').trim(),
-    jump_to_recipe_url: jumpToRecipeUrl || undefined
+    jumpToRecipeUrl: jumpToRecipeUrlVal || undefined
   };
 }
 
