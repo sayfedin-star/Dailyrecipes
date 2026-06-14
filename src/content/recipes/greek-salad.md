@@ -2,7 +2,7 @@
 title: "Vibrant Greek Salad (Horiatiki)"
 date: "2026-06-12"
 description: "A classic Greek salad recipe that is refreshing, simple, and packed with fresh cucumbers, juicy tomatoes, olives, onions, and feta cheese."
-image: "/images/salad.png"
+image: "../../assets/images/salad.webp"
 prepTime: 15
 cookTime: 0
 servings: 4

@@ -3,6 +3,7 @@ import "../styles/global.css";
 import SiteMeta from "@rafters/astro-meta/components/SiteMeta.astro";
 import OgImage from "@rafters/astro-meta/components/OgImage.astro";
 import { Title, Description, ColorScheme, Canonical } from "eminence-astro-suite/components";
+import { Font } from "astro:assets";
 
 interface Props {
   title?: string;
@@ -13,7 +14,7 @@ interface Props {
 const { 
   title = "Delicious Recipes", 
   description = "Discover delicious, easy-to-cook recipes for every occasion.", 
-  image = "/images/cookies.png" 
+  image = "/images/cookies.webp" 
 } = Astro.props;
 ---
 
@@ -23,10 +24,9 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Fonts Performance: Preconnect & swap -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Fonts Performance: Self-hosted via Astro Fonts API -->
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-outfit" preload />
     
     <!-- SEO & Metadata from eminence-astro-suite -->
     <Title value={title} />
@@ -40,10 +40,10 @@ const {
     
     <style is:global>
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-inter), sans-serif;
       }
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--font-outfit), sans-serif;
       }
     </style>
   </head>

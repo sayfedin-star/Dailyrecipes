@@ -2,7 +2,7 @@
 title: "Classic Homemade Beef Lasagna"
 date: "2026-06-13"
 description: "An authentic, rich, and comforting Italian lasagna made with layers of homemade meat sauce, creamy ricotta, mozzarella, and lasagna sheets."
-image: "/images/lasagna.png"
+image: "../../assets/images/lasagna.webp"
 prepTime: 30
 cookTime: 50
 servings: 8

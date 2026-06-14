@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import { astroMeta } from "@rafters/astro-meta/astro";
 import { defineSite } from "@rafters/astro-meta";
@@ -11,6 +11,20 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      weights: [400, 500, 600],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Outfit",
+      cssVariable: "--font-outfit",
+      weights: [500, 600, 700, 800],
+    }
+  ],
   integrations: [
     astroMeta({
       site: defineSite({

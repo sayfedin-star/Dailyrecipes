@@ -2,7 +2,7 @@
 title: "Perfect Soft-Baked Chocolate Chip Cookies"
 date: "2026-06-14"
 description: "The ultimate recipe for soft-baked chocolate chip cookies that are chewy on the inside, crispy on the edges, and loaded with rich chocolate pools."
-image: "/images/cookies.png"
+image: "../../assets/images/cookies.webp"
 prepTime: 15
 cookTime: 10
 servings: 24

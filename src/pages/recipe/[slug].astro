@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import SocialShare from "../../components/SocialShare.astro";
 import SchemaScript from "@rafters/astro-meta/components/SchemaScript.astro";
 import { getCollection, render } from "astro:content";
+import { Picture } from "astro:assets";
 
 export async function getStaticPaths() {
   const recipes = await getCollection("recipes");
@@ -39,7 +40,7 @@ const formattedDate = new Date(date).toLocaleDateString("en-US", {
 
 // Constructing Schema.org JSON-LD structured data
 const siteUrl = Astro.site ? Astro.site.toString() : "https://recipe-site.pages.dev/";
-const absoluteImageUrl = new URL(image, siteUrl).toString();
+const absoluteImageUrl = new URL(image.src, siteUrl).toString();
 const absoluteUrl = new URL(Astro.url.pathname, siteUrl).toString();
 
 const recipeSchema = {
@@ -68,7 +69,7 @@ const recipeSchema = {
 };
 ---
 
-<Layout title={title} description={description} image={image}>
+<Layout title={title} description={description} image={image.src}>
   {/* JSON-LD Structured Data for Google search crawlers */}
   <SchemaScript graph={recipeSchema} />
 
@@ -103,17 +104,21 @@ const recipeSchema = {
         <span>Jump to Recipe</span>
       </a>
       
-      <SocialShare title={title} description={description} image={image} />
+      <SocialShare title={title} description={description} image={image.src} />
     </div>
 
     {/* Large Hero Image */}
     <div class="relative w-full aspect-[16/9] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-850 shadow-lg border border-slate-200/30 dark:border-slate-800/35 mb-10">
-      <img 
+      <Picture 
         src={image} 
         alt={title}
-        loading="lazy"
-        width={960}
-        height={540}
+        widths={[400, 800, 960, 1200]}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
         class="object-cover w-full h-full"
       />
     </div>

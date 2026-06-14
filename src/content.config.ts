@@ -3,11 +3,11 @@ import { glob } from "astro/loaders";
 
 const recipes = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/recipes" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     date: z.coerce.date(),
     description: z.string(),
-    image: z.string(),
+    image: image(),
     prepTime: z.number(),
     cookTime: z.number(),
     servings: z.number(),
