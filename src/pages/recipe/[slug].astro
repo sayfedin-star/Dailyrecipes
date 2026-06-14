@@ -140,8 +140,9 @@ const recipeSchema = {
             <Picture 
               src={image} 
               alt={title}
-              widths={[400, 800, 960, 1200]}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
+              widths={[380, 760, 896]}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 760px, 896px"
+              quality={75}
               formats={['avif', 'webp']}
               fallbackFormat="webp"
               loading="eager"
@@ -165,8 +166,9 @@ const recipeSchema = {
           <Picture 
             src={image} 
             alt={title}
-            widths={[400, 800, 960, 1200]}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
+            widths={[380, 760, 896]}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 760px, 896px"
+            quality={75}
             formats={['avif', 'webp']}
             fallbackFormat="webp"
             loading="eager"
