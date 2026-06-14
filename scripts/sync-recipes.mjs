@@ -27,17 +27,6 @@ function normalizeRecipe(raw) {
     throw new Error(`Missing required fields: slug='${raw.slug}', title='${raw.title}'`);
   }
 
-  const isPublished = (
-    raw.status === 'published' || 
-    raw.status === 'Published' || 
-    raw.published === true || 
-    raw.published === 'true'
-  );
-
-  if (!isPublished) {
-    throw new Error(`Recipe '${raw.title}' is not published (status: ${raw.status})`);
-  }
-
   const ingredients = parseList(raw.ingredients);
   const steps = parseList(raw.instructions || raw.steps);
   const tags = parseList(raw.tags);
@@ -77,6 +66,24 @@ function normalizeRecipe(raw) {
     }
   }
 
+  let jumpToRecipeUrl = '';
+  const rawUrl = raw['Jump to Recipe'] || raw.jump_to_recipe_url || raw.jumpToRecipe || raw.jump_to_recipe || raw.jumpToRecipeUrl;
+  if (rawUrl) {
+    const trimmed = String(rawUrl).trim();
+    if (trimmed) {
+      try {
+        let urlToCheck = trimmed;
+        if (!/^https?:\/\//i.test(urlToCheck)) {
+          urlToCheck = 'https://' + urlToCheck;
+        }
+        new URL(urlToCheck);
+        jumpToRecipeUrl = urlToCheck;
+      } catch (e) {
+        console.warn(`[CMS Sync] Invalid URL for recipe '${raw.title || 'untitled'}': ${trimmed}`);
+      }
+    }
+  }
+
   return {
     title: String(raw.title).trim(),
     date,
@@ -91,7 +98,8 @@ function normalizeRecipe(raw) {
     ingredients,
     steps,
     faq,
-    body: String(raw.body || raw.content || '').trim()
+    body: String(raw.body || raw.content || '').trim(),
+    jump_to_recipe_url: jumpToRecipeUrl || undefined
   };
 }
 
@@ -117,19 +125,63 @@ async function sync() {
 
     let successCount = 0;
     for (const raw of data.recipes) {
+      const slug = String(raw.slug || '').trim();
+      if (!slug) {
+        console.warn(`[CMS Sync] Skipped entry: Missing slug`);
+        continue;
+      }
+
+      const status = String(raw.status || '').trim().toLowerCase();
+      const filename = `${slug}.json`;
+      const filePath = path.join(OUTPUT_DIR, filename);
+      const fileExists = fs.existsSync(filePath);
+
+      if (status === 'deleted') {
+        if (fileExists) {
+          fs.unlinkSync(filePath);
+          console.log(`[CMS Sync] Deleted: ${filename} (Status: deleted)`);
+        } else {
+          console.log(`[CMS Sync] Ignored: ${slug} (Status: deleted)`);
+        }
+        continue;
+      }
+
+      if (status === 'archived') {
+        if (fileExists) {
+          fs.unlinkSync(filePath);
+          console.log(`[CMS Sync] Archived: ${filename} removed from public site (Status: archived)`);
+        } else {
+          console.log(`[CMS Sync] Ignored: ${slug} (Status: archived)`);
+        }
+        continue;
+      }
+
+      if (status === 'draft') {
+        if (fileExists) {
+          fs.unlinkSync(filePath);
+          console.log(`[CMS Sync] Draft: ${filename} removed from public site (Status: draft)`);
+        } else {
+          console.log(`[CMS Sync] Ignored: ${slug} (Status: draft)`);
+        }
+        continue;
+      }
+
+      if (status !== 'published') {
+        console.warn(`[CMS Sync] Skipped entry: ${slug} has unknown status: '${raw.status}'`);
+        continue;
+      }
+
       try {
         const normalized = normalizeRecipe(raw);
-        const filename = `${normalized.slug || raw.slug}.json`;
-        const filePath = path.join(OUTPUT_DIR, filename);
-
-        // Keep slug out of JSON data as it is inferred by filename/id in Astro
-        const fileData = { ...normalized };
-        
-        fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
-        console.log(`[CMS Sync] Synchronized: ${filename}`);
+        fs.writeFileSync(filePath, JSON.stringify(normalized, null, 2), 'utf8');
+        if (fileExists) {
+          console.log(`[CMS Sync] Updated: ${filename}`);
+        } else {
+          console.log(`[CMS Sync] Created: ${filename}`);
+        }
         successCount++;
       } catch (err) {
-        console.warn(`[CMS Sync] Skipping entry: ${err.message}`);
+        console.warn(`[CMS Sync] Skipped entry: ${err.message}`);
       }
     }
     console.log(`[CMS Sync] Completed. Synchronized ${successCount} recipes.`);

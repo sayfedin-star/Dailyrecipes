@@ -20,7 +20,8 @@ const recipes = defineCollection({
       question: z.string(),
       answer: z.string()
     })).optional(),
-    body: z.string().optional()
+    body: z.string().optional(),
+    jump_to_recipe_url: z.string().optional()
   }),
 });
 
