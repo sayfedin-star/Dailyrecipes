@@ -47,7 +47,8 @@ const formattedDate = new Date(date).toLocaleDateString("en-US", {
 
 // Constructing Schema.org JSON-LD structured data
 const siteUrl = Astro.site ? Astro.site.toString() : "https://recipe-site.pages.dev/";
-const absoluteImageUrl = new URL(image.src, siteUrl).toString();
+const imageUrl = typeof image === 'string' ? image : image.src;
+const absoluteImageUrl = typeof image === 'string' ? image : new URL(image.src, siteUrl).toString();
 const absoluteUrl = new URL(Astro.url.pathname, siteUrl).toString();
 
 const recipeSchema = {
@@ -76,7 +77,7 @@ const recipeSchema = {
 };
 ---
 
-<Layout title={title} description={description} image={image.src}>
+<Layout title={title} description={description} image={imageUrl}>
   {/* JSON-LD Structured Data for Google search crawlers */}
   <SchemaScript graph={recipeSchema} />
 
@@ -113,23 +114,68 @@ const recipeSchema = {
         <span>Jump to Recipe</span>
       </a>
       
-      <SocialShare title={title} description={description} image={image.src} />
+      <SocialShare title={title} description={description} image={imageUrl} />
     </div>
 
     {/* Large Hero Image */}
     <div class="relative w-full aspect-[16/9] rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-850 shadow-lg border border-slate-200/30 dark:border-slate-800/35 mb-10">
-      <Picture 
-        src={image} 
-        alt={title}
-        widths={[400, 800, 960, 1200]}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
-        formats={['avif', 'webp']}
-        fallbackFormat="webp"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        class="object-cover w-full h-full"
-      />
+      {jumpToRecipeUrl ? (
+        <a 
+          href={jumpToRecipeUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="block w-full h-full cursor-pointer hover:opacity-95 transition-opacity"
+          aria-label={`Jump to external recipe for ${title}`}
+        >
+          {typeof image === 'string' ? (
+            <img 
+              src={image} 
+              alt={title}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="object-cover w-full h-full"
+            />
+          ) : (
+            <Picture 
+              src={image} 
+              alt={title}
+              widths={[400, 800, 960, 1200]}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="object-cover w-full h-full"
+            />
+          )}
+        </a>
+      ) : (
+        typeof image === 'string' ? (
+          <img 
+            src={image} 
+            alt={title}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="object-cover w-full h-full"
+          />
+        ) : (
+          <Picture 
+            src={image} 
+            alt={title}
+            widths={[400, 800, 960, 1200]}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 800px, 960px"
+            formats={['avif', 'webp']}
+            fallbackFormat="webp"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="object-cover w-full h-full"
+          />
+        )
+      )}
     </div>
 
     {/* Recipe Card (Jump anchor target) */}

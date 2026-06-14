@@ -7,7 +7,7 @@ const recipes = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     description: z.string(),
-    image: image(),
+    image: image().or(z.string()),
     prepTime: z.number(),
     cookTime: z.number(),
     servings: z.number(),

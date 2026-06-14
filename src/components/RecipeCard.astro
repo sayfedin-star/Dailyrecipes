@@ -5,7 +5,7 @@ import type { ImageMetadata } from "astro";
 interface Props {
   slug: string;
   title: string;
-  image: ImageMetadata;
+  image: ImageMetadata | string;
   prepTime: number;
   category: string;
 }
@@ -28,15 +28,25 @@ const badgeClass = categoryColors[categoryKey] || "bg-amber-50 text-amber-700 da
   
   {/* Image container */}
   <div class="relative w-full aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-850">
-    <Image 
-      src={image} 
-      alt={title}
-      width={400}
-      height={250}
-      loading="lazy"
-      decoding="async"
-      class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
-    />
+    {typeof image === 'string' ? (
+      <img 
+        src={image} 
+        alt={title}
+        loading="lazy"
+        decoding="async"
+        class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
+      />
+    ) : (
+      <Image 
+        src={image} 
+        alt={title}
+        width={400}
+        height={250}
+        loading="lazy"
+        decoding="async"
+        class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ease-out"
+      />
+    )}
     <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-lg border text-xs font-semibold uppercase tracking-wider backdrop-blur-md ${badgeClass}`}>
       {category}
     </span>
