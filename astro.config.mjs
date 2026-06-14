@@ -6,7 +6,7 @@ import siteFiles from "@casoon/astro-site-files";
 import eminence from "eminence-astro-suite";
 
 export default defineConfig({
-  site: "https://recipe-site.pages.dev",
+  site: "https://dailyrecipes-3re.pages.dev",
   output: "static",
   vite: {
     plugins: [tailwindcss()],
@@ -28,7 +28,7 @@ export default defineConfig({
   integrations: [
     astroMeta({
       site: defineSite({
-        url: "https://recipe-site.pages.dev",
+        url: "https://dailyrecipes-3re.pages.dev",
         name: "Astro Recipe Site",
         description: "A premium Astro static recipe blog",
         locale: "en-US",
