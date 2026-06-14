@@ -1,3 +1,0 @@
-# Astro Recipe Site
-
-> A premium static recipe blog built with Astro 6.4.
