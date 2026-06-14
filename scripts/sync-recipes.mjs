@@ -1,8 +1,46 @@
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbz_fxA6W91uxBzrJBDim6I1tmJh66qbw2kw4IFelh6F8SpQDzLQ2nVA7_DOxLd7Lohf/exec';
 const OUTPUT_DIR = './src/content/recipes';
+const IMAGES_DIR = './src/assets/images';
+
+async function downloadAndOptimizeImage(imageUrl, slug) {
+  const filename = `${slug}.webp`;
+  const localPath = path.join(IMAGES_DIR, filename);
+  const jsonImagePath = `../../assets/images/${filename}`;
+
+  // Ensure images directory exists
+  if (!fs.existsSync(IMAGES_DIR)) {
+    fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  }
+
+  // Avoid repeated downloading if the optimized file already exists
+  if (fs.existsSync(localPath)) {
+    console.log(`[CMS Sync] Image for '${slug}' already exists locally: ${filename}`);
+    return jsonImagePath;
+  }
+
+  console.log(`[CMS Sync] Downloading remote image for '${slug}': ${imageUrl}`);
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error downloading image: ${response.status}`);
+    }
+    const buffer = await response.arrayBuffer();
+
+    console.log(`[CMS Sync] Converting remote image to WebP: ${filename}`);
+    await sharp(Buffer.from(buffer))
+      .webp({ quality: 85 })
+      .toFile(localPath);
+
+    return jsonImagePath;
+  } catch (error) {
+    console.warn(`[CMS Sync] Failed to download/convert image for '${slug}': ${error.message}. Falling back to default cookies.webp.`);
+    return '../../assets/images/cookies.webp';
+  }
+}
 
 function parseList(val) {
   if (!val) return [];
@@ -22,7 +60,7 @@ function parseList(val) {
   return [];
 }
 
-function normalizeRecipe(raw) {
+async function normalizeRecipe(raw, slug) {
   if (!raw.slug || !raw.title) {
     throw new Error(`Missing required fields: slug='${raw.slug}', title='${raw.title}'`);
   }
@@ -57,7 +95,9 @@ function normalizeRecipe(raw) {
 
   let image = raw.image || '../../assets/images/cookies.webp';
   if (typeof image === 'string') {
-    if (image.startsWith('/images/')) {
+    if (image.startsWith('http')) {
+      image = await downloadAndOptimizeImage(image, slug);
+    } else if (image.startsWith('/images/')) {
       const filename = path.basename(image, path.extname(image));
       image = `../../assets/images/${filename}.webp`;
     } else if (!image.startsWith('.') && !image.startsWith('http')) {
@@ -172,7 +212,7 @@ async function sync() {
       }
 
       try {
-        const normalized = normalizeRecipe(raw);
+        const normalized = await normalizeRecipe(raw, slug);
         fs.writeFileSync(filePath, JSON.stringify(normalized, null, 2), 'utf8');
         if (fileExists) {
           console.log(`[CMS Sync] Updated: ${filename}`);
