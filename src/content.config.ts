@@ -2,7 +2,7 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
 const recipes = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/recipes" }),
+  loader: glob({ pattern: "**/*.{md,json}", base: "./src/content/recipes" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     date: z.coerce.date(),
@@ -16,6 +16,11 @@ const recipes = defineCollection({
     tags: z.array(z.string()),
     ingredients: z.array(z.string()),
     steps: z.array(z.string()),
+    faq: z.array(z.object({
+      question: z.string(),
+      answer: z.string()
+    })).optional(),
+    body: z.string().optional()
   }),
 });
 

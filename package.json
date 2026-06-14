@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && node optimize-html.js",
+    "sync:recipes": "node scripts/sync-recipes.mjs",
+    "build": "npm run sync:recipes && astro build && node optimize-html.js",
     "preview": "astro preview",
     "astro": "astro",
     "postinstall": "node patch-astro.js"
