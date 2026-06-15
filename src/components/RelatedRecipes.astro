@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+  currentCategory: string;
+  currentTags: string[];
+  currentId: string;
+}
+
+const { currentCategory, currentTags = [], currentId } = Astro.props;
+
+const allRecipes = await getCollection("recipes");
+const otherRecipes = allRecipes.filter((r) => r.id !== currentId);
+
+// Rank recipes by relevance
+const scoredRecipes = otherRecipes.map((r) => {
+  let score = 0;
+  if (r.data.category === currentCategory) {
+    score += 10;
+  }
+  
+  // Overlapping tags
+  const tags = r.data.tags || [];
+  const commonTags = tags.filter((t) => currentTags.includes(t));
+  score += commonTags.length * 2;
+  
+  return { recipe: r, score };
+});
+
+// Sort by score (descending)
+scoredRecipes.sort((a, b) => b.score - a.score);
+
+// Extract the sorted recipes
+let related = scoredRecipes.map((item) => item.recipe);
+
+// Ensure we have at least 5 recipes, if not we add some others from the remaining list to make it look full
+if (related.length < 5 && otherRecipes.length > related.length) {
+  const remaining = otherRecipes.filter(r => !related.some(rel => rel.id === r.id));
+  related = [...related, ...remaining];
+}
+
+// Slice to maximum of 10 items
+const displayRecipes = related.slice(0, 10);
+
+// Dynamic heading to match 40 Aprons' theme
+let headingText = "More Recipes You'll Love";
+if (currentCategory) {
+  if (currentCategory.toLowerCase() === "easy") {
+    headingText = "More Dips, Salsa, and Party Foods You'll Love";
+  } else {
+    headingText = `More ${currentCategory} Recipes You'll Love`;
+  }
+}
+---
+
+{displayRecipes.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-slate-200/60 dark:border-slate-800/60 font-sans">
+    <div class="flex items-center gap-3.5 mb-5">
+      <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[#FAF0EC] dark:bg-[#251d1a] flex items-center justify-center border border-[#F6DED5] dark:border-[#38231c]">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4.5 h-4.5 text-[#E99C82]">
+          <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+        </svg>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-serif font-semibold text-slate-900 dark:text-white leading-tight">
+        {headingText}
+      </h2>
+    </div>
+    
+    <ul class="space-y-2.5 pl-2">
+      {displayRecipes.map((r) => (
+        <li class="flex items-start gap-2.5 group">
+          <span class="text-[#E99C82] select-none mt-1 text-xs">•</span>
+          <a
+            href={`/recipe/${r.id}`}
+            class="text-[#486B62] dark:text-[#8ac9ba] hover:text-[#38544d] dark:hover:text-white hover:underline font-semibold text-sm sm:text-base leading-relaxed transition-colors duration-150"
+          >
+            {r.data.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

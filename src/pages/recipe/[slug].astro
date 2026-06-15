@@ -5,6 +5,10 @@ import SchemaScript from "@rafters/astro-meta/components/SchemaScript.astro";
 import { getCollection, render } from "astro:content";
 import { Picture, Image } from "astro:assets";
 import authorAvatar from "../../assets/images/author-avatar.png";
+import RelatedRecipes from "../../components/RelatedRecipes.astro";
+import AuthorBio from "../../components/AuthorBio.astro";
+import NewsletterSignup from "../../components/NewsletterSignup.astro";
+import LeaveReview from "../../components/LeaveReview.astro";
 
 export async function getStaticPaths() {
   const recipes = await getCollection("recipes");
@@ -38,6 +42,13 @@ const {
   steps,
   jumpToRecipeUrl,
 } = recipe.data;
+
+// Fetch all recipes to find previous/next links
+const allRecipes = await getCollection("recipes");
+const sortedRecipes = allRecipes.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const currentIndex = sortedRecipes.findIndex(r => r.id === recipe.id);
+const prevRecipe = currentIndex < sortedRecipes.length - 1 ? sortedRecipes[currentIndex + 1] : null;
+const nextRecipe = currentIndex > 0 ? sortedRecipes[currentIndex - 1] : null;
 
 // Formatting Date
 const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -81,6 +92,8 @@ const recipeSchema = {
 const encodedUrl = encodeURIComponent(absoluteUrl);
 const encodedImage = encodeURIComponent(absoluteImageUrl);
 const encodedDescription = encodeURIComponent(description);
+
+const hasLocalDetails = ingredients && ingredients.length > 0 && steps && steps.length > 0;
 ---
 
 <Layout title={title} description={description} image={imageUrl}>
@@ -137,7 +150,7 @@ const encodedDescription = encodeURIComponent(description);
       </div>
 
       {/* 5. 40aprons style Actions Row */}
-      <div class="flex items-center gap-3 mb-5">
+      <div class="flex flex-wrap items-center gap-3 mb-5">
         <a 
           href={jumpToRecipeUrl || "#recipe-card"} 
           target={jumpToRecipeUrl ? "_blank" : undefined}
@@ -247,75 +260,102 @@ const encodedDescription = encodeURIComponent(description);
         )}
       </div>
 
-      {/* Recipe Card (Jump anchor target) */}
-      <section 
-        id="recipe-card" 
-        class="scroll-mt-20 border border-amber-200/50 dark:border-amber-900/30 bg-amber-50/20 dark:bg-slate-900/30 rounded-3xl p-6 sm:p-8 mb-12 shadow-sm"
-      >
-        <div class="text-center sm:text-left mb-6 border-b border-amber-200/40 dark:border-slate-800/40 pb-4">
-          <h2 class="text-2xl font-serif font-bold text-slate-800 dark:text-white">Recipe Details</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Quick summary of cook times and nutrition</p>
+      {hasLocalDetails ? (
+        <>
+          {/* Recipe Card (Jump anchor target) */}
+          <section 
+            id="recipe-card" 
+            class="scroll-mt-20 border border-amber-200/50 dark:border-amber-900/30 bg-amber-50/20 dark:bg-slate-900/30 rounded-3xl p-6 sm:p-8 mb-12 shadow-sm"
+          >
+            <div class="text-center sm:text-left mb-6 border-b border-amber-200/40 dark:border-slate-800/40 pb-4">
+              <h2 class="text-2xl font-serif font-bold text-slate-800 dark:text-white">Recipe Details</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Quick summary of cook times and nutrition</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
+                <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Prep Time</span>
+                <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{prepTime} mins</span>
+              </div>
+              <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
+                <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Cook Time</span>
+                <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{cookTime} mins</span>
+              </div>
+              <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
+                <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Servings</span>
+                <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{servings}</span>
+              </div>
+              <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
+                <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Calories</span>
+                <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{calories} kcal</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Ingredients & Steps Layout */}
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+            {/* Left Column: Ingredients (2/5 size) */}
+            <section class="lg:col-span-2">
+              <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+                Ingredients
+              </h3>
+              <ul class="space-y-3.5">
+                {ingredients.map((ingredient) => (
+                  <li class="flex items-start gap-3.5 text-slate-700 dark:text-slate-355">
+                    <span class="flex-shrink-0 w-5 h-5 rounded-full border border-slate-300 dark:border-slate-750 flex items-center justify-center mt-0.5 bg-white dark:bg-slate-900 hover:border-amber-500 cursor-pointer transition-colors shadow-2xs">
+                    </span>
+                    <span class="text-sm font-medium leading-relaxed">{ingredient}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Right Column: Instructions (3/5 size) */}
+            <section class="lg:col-span-3">
+              <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-5">
+                Instructions
+              </h3>
+              <ol class="space-y-6">
+                {steps.map((step, index) => (
+                  <li class="flex gap-4">
+                    <span class="flex-shrink-0 w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-[13px] shadow-sm">
+                      {index + 1}
+                    </span>
+                    <div class="pt-0.5">
+                      <p class="text-sm text-slate-700 dark:text-slate-355 leading-relaxed font-medium">
+                        {step}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </div>
+        </>
+      ) : jumpToRecipeUrl && (
+        <div class="bg-amber-50/40 dark:bg-slate-900/20 border border-amber-200/50 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 text-center my-8 shadow-xs animate-fade-in font-sans">
+          <div class="max-w-md mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto text-[#E99C82] mb-3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+            </svg>
+            <h3 class="text-lg font-serif font-bold text-slate-800 dark:text-white mb-2">Full Recipe Details Available Online</h3>
+            <p class="text-sm text-slate-650 dark:text-slate-400 mb-5 leading-relaxed">
+              This recipe is hosted externally on 40 Aprons. Click below to view the full list of ingredients, step-by-step instructions, and chef tips!
+            </p>
+            <a 
+              href={jumpToRecipeUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#3D5E56] hover:bg-[#2c443e] text-white font-bold text-xs tracking-widest uppercase rounded-xl transition-all duration-200 active:scale-[0.98] shadow-md shadow-[#3D5E56]/10"
+            >
+              <span>View Full Recipe on 40 Aprons</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </div>
         </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
-            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Prep Time</span>
-            <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{prepTime} mins</span>
-          </div>
-          <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
-            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Cook Time</span>
-            <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{cookTime} mins</span>
-          </div>
-          <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
-            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Servings</span>
-            <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{servings}</span>
-          </div>
-          <div class="p-4 bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800/30 shadow-xs">
-            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Calories</span>
-            <span class="block text-xl font-extrabold text-slate-800 dark:text-white mt-1">{calories} kcal</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Ingredients & Steps Layout */}
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
-        {/* Left Column: Ingredients (2/5 size) */}
-        <section class="lg:col-span-2">
-          <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
-            Ingredients
-          </h3>
-          <ul class="space-y-3.5">
-            {ingredients.map((ingredient) => (
-              <li class="flex items-start gap-3.5 text-slate-700 dark:text-slate-355">
-                <span class="flex-shrink-0 w-5 h-5 rounded-full border border-slate-300 dark:border-slate-750 flex items-center justify-center mt-0.5 bg-white dark:bg-slate-900 hover:border-amber-500 cursor-pointer transition-colors shadow-2xs">
-                </span>
-                <span class="text-sm font-medium leading-relaxed">{ingredient}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Right Column: Instructions (3/5 size) */}
-        <section class="lg:col-span-3">
-          <h3 class="text-xl font-serif font-bold text-slate-900 dark:text-white mb-5">
-            Instructions
-          </h3>
-          <ol class="space-y-6">
-            {steps.map((step, index) => (
-              <li class="flex gap-4">
-                <span class="flex-shrink-0 w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-[13px] shadow-sm">
-                  {index + 1}
-                </span>
-                <div class="pt-0.5">
-                  <p class="text-sm text-slate-700 dark:text-slate-355 leading-relaxed font-medium">
-                    {step}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
+      )}
 
       {/* Markdown or JSON Body Content Render */}
       {Content ? (
@@ -341,6 +381,44 @@ const encodedDescription = encodeURIComponent(description);
           </span>
         ))}
       </div>
+
+      {/* Related Recipes */}
+      <RelatedRecipes currentCategory={category} currentTags={tags} currentId={recipe.id} />
+
+      {/* Author Bio */}
+      <AuthorBio />
+
+      {/* Previous / Next Navigation */}
+      <div class="flex flex-col sm:flex-row items-stretch border-t border-b border-slate-200/50 dark:border-slate-800/40 py-4 sm:py-6 my-10 font-sans gap-4 sm:gap-0">
+        <div class="flex-1 text-left sm:pr-4">
+          {prevRecipe && (
+            <a href={`/recipe/${prevRecipe.id}`} class="group block">
+              <span class="text-[10px] font-bold tracking-widest text-slate-450 dark:text-slate-500 uppercase block mb-1">← Previous</span>
+              <span class="text-sm sm:text-base font-serif text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors duration-200 leading-snug">
+                {prevRecipe.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+        {prevRecipe && nextRecipe && <div class="hidden sm:block w-px bg-slate-200/60 dark:bg-slate-800/60 self-stretch" />}
+        {prevRecipe && nextRecipe && <div class="block sm:hidden h-px bg-slate-200/60 dark:bg-slate-800/60 w-full" />}
+        <div class="flex-1 text-right sm:pl-4">
+          {nextRecipe && (
+            <a href={`/recipe/${nextRecipe.id}`} class="group block">
+              <span class="text-[10px] font-bold tracking-widest text-slate-450 dark:text-slate-500 uppercase block mb-1">Next →</span>
+              <span class="text-sm sm:text-base font-serif text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors duration-200 leading-snug">
+                {nextRecipe.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Newsletter Signup */}
+      <NewsletterSignup />
+
+      {/* Leave A Review Form */}
+      <LeaveReview />
     </article>
   </div>
 </Layout>

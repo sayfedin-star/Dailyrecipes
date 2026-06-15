@@ -1,0 +1,26 @@
+---
+import { Image } from "astro:assets";
+import authorAvatar from "../assets/images/author-avatar.png";
+---
+
+<section class="relative w-full mt-12 sm:mt-20 pt-16 pb-8 px-5 sm:px-8 border border-slate-200/50 dark:border-slate-800/80 bg-[#FCFAF7] dark:bg-slate-900/35 rounded-2xl text-center shadow-xs max-w-2xl mx-auto font-sans">
+  <!-- Overlapping avatar photo -->
+  <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+    <Image 
+      src={authorAvatar} 
+      alt="Cheryl Malik" 
+      width={80}
+      height={80}
+      loading="lazy"
+      class="w-20 h-20 rounded-full object-cover border-4 border-[#FCFAF7] dark:border-[#131929] shadow-md"
+    />
+  </div>
+
+  <h2 class="text-xl sm:text-2xl font-serif font-bold text-slate-800 dark:text-white mb-3">
+    Meet Cheryl Malik
+  </h2>
+
+  <p class="text-sm text-slate-650 dark:text-slate-350 leading-relaxed max-w-xl mx-auto font-sans">
+    In addition to being a certified health coach, certified yoga instructor, and mom of 3, Cheryl is also the recipe developer, editor-in-chief, food photographer, and passionate foodie behind 40 Aprons. Having spent the last 10+ years as a food blogger, she's become known for her flavorful recipes, detailed instructions, gorgeous photography, and down-to-earth approach to food and cooking in general.
+  </p>
+</section>

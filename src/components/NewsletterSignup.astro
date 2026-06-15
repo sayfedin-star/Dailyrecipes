@@ -1,0 +1,86 @@
+---
+// NewsletterSignup component
+---
+
+<section class="relative w-full mt-10 sm:mt-16 bg-[#3D5E56] text-white p-6 sm:p-10 rounded-3xl overflow-visible shadow-lg max-w-2xl mx-auto font-sans">
+  <!-- Decorative Hanging Apron/Pot Bag SVG -->
+  <div class="absolute -top-7 left-6 w-16 h-16 pointer-events-none select-none" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="64" height="64" class="w-full h-full overflow-visible drop-shadow-md">
+      <!-- Leaves -->
+      <path d="M 40 25 C 35 15, 25 15, 28 28 C 30 35, 40 32, 40 25 Z" fill="#2c443e" stroke="#1c2c28" stroke-width="1" />
+      <path d="M 40 25 C 45 10, 58 12, 50 28 C 45 35, 40 32, 40 25 Z" fill="#2c443e" stroke="#1c2c28" stroke-width="1" />
+      <!-- Apron/Bag Body -->
+      <path d="M 25 35 L 55 35 Q 60 35 62 40 L 68 75 Q 70 82 62 82 L 18 82 Q 10 82 12 75 L 18 40 Q 20 35 25 35 Z" fill="#F3A790" stroke="#d58f7a" stroke-width="1" />
+      <!-- Apron tie/detail -->
+      <path d="M 22 35 C 22 25, 58 25, 58 35" fill="none" stroke="#F3A790" stroke-width="2" />
+      <!-- Small dots pattern -->
+      <circle cx="25" cy="50" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="35" cy="45" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="45" cy="52" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="55" cy="48" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="30" cy="65" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="40" cy="60" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="50" cy="67" r="1.2" fill="#fff" opacity="0.6"/>
+      <circle cx="60" cy="62" r="1.2" fill="#fff" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="text-center max-w-lg mx-auto">
+    <span class="block text-xs font-bold text-[#F3A790] uppercase tracking-widest mb-2">
+      NEVER MISS A MEAL!
+    </span>
+    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-white leading-tight mb-3">
+      New Recipes Straight To Your Inbox
+    </h2>
+    <p class="text-sm text-slate-100/90 leading-relaxed mb-6">
+      A curated selection of our most recent recipes, delivered straight to your inbox once a week.
+    </p>
+
+    <!-- Subscription Form -->
+    <form id="newsletter-form" class="space-y-3.5 text-left">
+      <div>
+        <label for="news-name" class="sr-only">Name</label>
+        <input
+          type="text"
+          id="news-name"
+          placeholder="Name"
+          required
+          class="w-full px-4 py-3 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F3A790] text-sm transition-all shadow-xs border border-transparent"
+        />
+      </div>
+      <div>
+        <label for="news-email" class="sr-only">Email</label>
+        <input
+          type="email"
+          id="news-email"
+          placeholder="Email"
+          required
+          class="w-full px-4 py-3 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F3A790] text-sm transition-all shadow-xs border border-transparent"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full py-3 bg-[#F3A790] hover:bg-[#eb967d] text-[#3D5E56] font-bold tracking-widest rounded-lg transition-all duration-200 active:scale-[0.99] cursor-pointer text-xs uppercase shadow-sm font-sans"
+      >
+        SUBSCRIBE
+      </button>
+    </form>
+
+    <!-- Success Message (hidden by default) -->
+    <div id="newsletter-success" class="hidden p-4 bg-white/10 border border-white/20 rounded-xl text-white text-sm font-medium animate-fade-in mt-4">
+      ✓ Thank you for subscribing! Check your inbox soon for your first recipe update.
+    </div>
+  </div>
+</section>
+
+<script>
+  const newsForm = document.getElementById("newsletter-form");
+  const newsSuccess = document.getElementById("newsletter-success");
+  if (newsForm && newsSuccess) {
+    newsForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      newsForm.classList.add("hidden");
+      newsSuccess.classList.remove("hidden");
+    });
+  }
+</script>

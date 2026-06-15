@@ -1,0 +1,170 @@
+---
+// LeaveReview component
+---
+
+<section class="relative w-full mt-10 sm:mt-16 bg-[#FAF6F2] dark:bg-[#131929]/40 border border-[#FAF6F2] dark:border-slate-800/80 p-6 sm:p-10 rounded-3xl overflow-visible shadow-xs max-w-2xl mx-auto font-sans">
+  <!-- Decorative Peach SVG hanging on the top-right -->
+  <div class="absolute -top-7 right-6 w-16 h-16 pointer-events-none select-none" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="64" height="64" class="w-full h-full overflow-visible drop-shadow-md">
+      <!-- Leaves -->
+      <path d="M 50 30 C 50 15, 65 15, 60 28 C 58 35, 52 35, 50 30 Z" fill="#5A7D73" stroke="#466259" stroke-width="1" />
+      <path d="M 50 30 C 45 18, 35 20, 42 30 C 45 35, 48 33, 50 30 Z" fill="#5A7D73" stroke="#466259" stroke-width="1" />
+      <!-- Peach Body -->
+      <path d="M 50 30 C 65 30, 80 40, 80 60 C 80 80, 60 90, 50 82 C 40 90, 20 80, 20 60 C 20 40, 35 30, 50 30 Z" fill="#F3A790" stroke="#d58f7a" stroke-width="1" />
+      <!-- Peach cleft -->
+      <path d="M 50 32 C 50 50, 47 70, 50 81" fill="none" stroke="#d58f7a" stroke-width="1" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <div class="max-w-xl mx-auto">
+    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-800 dark:text-white leading-tight mb-2">
+      Leave A Review
+    </h2>
+    <p class="text-xs text-slate-500 dark:text-slate-400 italic mb-6">
+      Your email address will not be published. Required fields are marked *
+    </p>
+
+    <!-- Star Rating Counter & Review Form -->
+    <form id="review-form" class="space-y-4">
+      <!-- Star Rating Widget -->
+      <div class="flex items-center gap-2.5 mb-5 select-none">
+        <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Recipe Rating</span>
+        <div class="flex text-2xl gap-0.5" id="rating-stars">
+          {[1, 2, 3, 4, 5].map((num) => (
+            <button
+              type="button"
+              data-star={num}
+              class="star-button p-2 text-2xl text-slate-300 dark:text-slate-700 hover:text-amber-500 transition-colors duration-100 cursor-pointer"
+              aria-label={`Rate ${num} stars`}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+        <input type="hidden" name="rating" id="rating-value" value="" required />
+      </div>
+
+      <!-- Review Content -->
+      <div>
+        <label for="review-comment" class="sr-only">Comment *</label>
+        <textarea
+          id="review-comment"
+          required
+          rows="4"
+          placeholder="Write your review here..."
+          class="w-full p-4 border border-slate-200 dark:border-slate-800/80 rounded-xl bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm shadow-xs resize-y"
+        ></textarea>
+      </div>
+
+      <!-- Reviewer Details Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="review-name" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Name *</label>
+          <input
+            type="text"
+            id="review-name"
+            required
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-800/80 rounded-lg bg-white dark:bg-slate-900 text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm shadow-xs"
+          />
+        </div>
+        <div>
+          <label for="review-email" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Email *</label>
+          <input
+            type="email"
+            id="review-email"
+            required
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-800/80 rounded-lg bg-white dark:bg-slate-900 text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm shadow-xs"
+          />
+        </div>
+        <div>
+          <label for="review-website" class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Website</label>
+          <input
+            type="url"
+            id="review-website"
+            class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-800/80 rounded-lg bg-white dark:bg-slate-900 text-slate-805 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm shadow-xs"
+          />
+        </div>
+      </div>
+
+      <!-- Save Details Checkbox -->
+      <div class="flex items-start gap-2.5 pt-1.5 pb-2">
+        <input
+          type="checkbox"
+          id="save-info"
+          class="mt-1 h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+        />
+        <label for="save-info" class="text-xs text-slate-500 dark:text-slate-400 leading-normal select-none cursor-pointer">
+          Save my name, email, and website in this browser for the next time I comment.
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="px-8 py-3 bg-[#F3A790] hover:bg-[#eb967d] text-[#3D5E56] font-bold tracking-widest rounded-lg transition-all duration-200 active:scale-[0.99] cursor-pointer text-xs uppercase shadow-sm font-sans"
+      >
+        SUBMIT COMMENT
+      </button>
+    </form>
+
+    <!-- Success Feedback -->
+    <div id="review-success" class="hidden p-5 bg-[#FAF6F2] dark:bg-[#131929]/30 border border-emerald-500/30 rounded-xl text-emerald-800 dark:text-emerald-400 text-sm font-medium animate-fade-in text-center shadow-xs">
+      <div class="text-3xl mb-2">✓</div>
+      <div class="font-bold mb-1">Review Submitted!</div>
+      Thank you for your rating and review. It is currently awaiting moderation.
+    </div>
+  </div>
+</section>
+
+<script>
+  // Interactive Rating Stars
+  const starContainer = document.getElementById('rating-stars');
+  if (starContainer) {
+    const stars = starContainer.querySelectorAll('.star-button');
+    const ratingInput = document.getElementById('rating-value') as HTMLInputElement;
+    let selectedRating = 0;
+
+    stars.forEach((star) => {
+      // Hover states
+      star.addEventListener('mouseover', () => {
+        const val = parseInt(star.getAttribute('data-star') || '0');
+        highlightStars(val);
+      });
+
+      star.addEventListener('mouseleave', () => {
+        highlightStars(selectedRating);
+      });
+
+      // Selection click state
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.getAttribute('data-star') || '0');
+        if (ratingInput) ratingInput.value = selectedRating.toString();
+        highlightStars(selectedRating);
+      });
+    });
+
+    function highlightStars(count: number) {
+      stars.forEach((s) => {
+        const starVal = parseInt(s.getAttribute('data-star') || '0');
+        if (starVal <= count) {
+          s.classList.remove('text-slate-300', 'dark:text-slate-700');
+          s.classList.add('text-amber-500');
+        } else {
+          s.classList.add('text-slate-300', 'dark:text-slate-700');
+          s.classList.remove('text-amber-500');
+        }
+      });
+    }
+  }
+
+  // Handle Form Submission
+  const reviewForm = document.getElementById('review-form');
+  const reviewSuccess = document.getElementById('review-success');
+  if (reviewForm && reviewSuccess) {
+    reviewForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      reviewForm.classList.add('hidden');
+      reviewSuccess.classList.remove('hidden');
+    });
+  }
+</script>
