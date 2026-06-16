@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import RecipeCard from "../components/RecipeCard.astro";
 import { getCollection } from "astro:content";
+import { formatCategory } from "../utils/category";
 
 const recipes = await getCollection("recipes");
 
@@ -9,7 +10,7 @@ const recipes = await getCollection("recipes");
 const sortedRecipes = recipes.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 // Unique categories
-const categories = [...new Set(recipes.map((r) => r.data.category))];
+const categories = [...new Set(recipes.map((r) => formatCategory(r.data.category)))];
 ---
 
 <Layout title="Home" description="Explore delicious recipes on RecipeSuite. Built with Astro 6.4.">

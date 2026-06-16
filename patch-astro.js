@@ -53,7 +53,7 @@ if (fs.existsSync(raftersMetaPath)) {
       'import { glob, mkdir, readFile, writeFile } from "node:fs/promises";',
       `import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { readdirSync, statSync } from "node:fs";
-import { relative, sep } from "node:path";
+import { join, relative, sep } from "node:path";
 async function* glob(pattern, options) {
   const cwd = options.cwd;
   function* walk(dir) {

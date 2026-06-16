@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import { formatCategory } from "../utils/category";
 
 interface Props {
   slug: string;
@@ -19,7 +20,8 @@ const categoryColors: Record<string, string> = {
   salad: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/35 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800/35",
 };
 
-const categoryKey = category.toLowerCase();
+const formattedCategory = formatCategory(category);
+const categoryKey = formattedCategory.toLowerCase();
 const badgeClass = categoryColors[categoryKey] || "bg-amber-50 text-amber-700 dark:bg-amber-950/35 dark:text-amber-300 border-amber-100 dark:border-amber-800/35";
 ---
 
@@ -48,7 +50,7 @@ const badgeClass = categoryColors[categoryKey] || "bg-amber-50 text-amber-700 da
       />
     )}
     <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-lg border text-xs font-semibold uppercase tracking-wider backdrop-blur-md ${badgeClass}`}>
-      {category}
+      {formattedCategory}
     </span>
   </div>
 
@@ -60,8 +62,17 @@ const badgeClass = categoryColors[categoryKey] || "bg-amber-50 text-amber-700 da
     
     <div class="flex items-center gap-4 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/60 text-xs font-medium text-slate-500 dark:text-slate-400">
       <div class="flex items-center gap-1.5">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Prep: {prepTime} mins</span>
+        {prepTime > 0 ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Prep: {prepTime} mins</span>
+          </>
+        ) : (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span>View Recipe</span>
+          </>
+        )}
       </div>
     </div>
   </div>

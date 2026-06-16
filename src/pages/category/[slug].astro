@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import RecipeCard from "../../components/RecipeCard.astro";
 import { getCollection } from "astro:content";
+import { formatCategory } from "../../utils/category";
 
 export async function getStaticPaths() {
   const recipes = await getCollection("recipes");
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
     return {
       params: { slug: category },
       props: { 
-        category: originalCategoryName,
+        category: formatCategory(originalCategoryName),
         recipes: filteredRecipes 
       },
     };
