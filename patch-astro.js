@@ -53,18 +53,18 @@ if (fs.existsSync(raftersMetaPath)) {
       'import { glob, mkdir, readFile, writeFile } from "node:fs/promises";',
       `import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { readdirSync, statSync } from "node:fs";
-import { join, relative, sep } from "node:path";
+import { join as pathJoin, relative, sep } from "node:path";
 async function* glob(pattern, options) {
   const cwd = options.cwd;
   function* walk(dir) {
     const files = readdirSync(dir);
     for (const file of files) {
-      const fullPath = join(dir, file);
+      const fullPath = pathJoin(dir, file);
       const stat = statSync(fullPath);
       if (stat.isDirectory()) {
         yield* walk(fullPath);
       } else if (file.endsWith(".html")) {
-        yield join(relative(cwd, dir), file).split(sep).join("/");
+        yield pathJoin(relative(cwd, dir), file).split(sep).join("/");
       }
     }
   }
